@@ -9,4 +9,5 @@ indexRouter.route('/')
     (req, res) => res.json(200, 'Welcome to the endpoints')
   );
 
+
 indexRouter.use('/auth', authRouter);

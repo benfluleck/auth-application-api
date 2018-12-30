@@ -6,7 +6,7 @@ class Staff extends Model {
   }
 
   $beforeUpdate() {
-    this.updatedAt = new Date().toISOString();
+    this.updated_at = new Date().toISOString();
   }
 
 }

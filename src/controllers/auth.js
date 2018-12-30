@@ -1,8 +1,12 @@
 import bcrypt from 'bcryptjs';
 import uuidv4 from 'uuidv4';
+import Redis from 'ioredis';
 
 import Staff from '../models/staff'
+import { createConfirmEmailLink } from '../config/createConfirmationLink';
+import { sendConfirmationEmail } from '../email/confirmationEmail';
 
+const redis = new Redis()
 
 export const signup = async (req, res) => {
   try {
@@ -46,10 +50,20 @@ export const signup = async (req, res) => {
           .allowInsert('[id, firstName, lastName, email, password]')
           .insert(newStaff)
 
-        const { password, ...response } = createdStaff
+          const { password, ...response } = createdStaff
 
-        res.status(201).json({ status: 'success', message: 'Staff Created Successfully', data: response });
+          const confirmedUrl = req.protocol + '://' + req.get('host');
 
+        if(process.env.NODE_ENV === "test") {
+          const confirmationLink = await createConfirmEmailLink(confirmedUrl, response.id, redis)
+          sendConfirmationEmail(response.email, confirmationLink)
+        }
+
+        res.status(201).json({
+        status: 'success',
+        message: 'Staff Created Successfully',
+        data: response
+      });
       });
     });
   } catch (error) {
@@ -66,9 +80,18 @@ export const signin = async (req, res) => {
       return res.status(404).json({ status: 'error', message: "This staff does not exist" });
     }
 
+    if(!staffExists.hasConfirmed) {
+      return res.status(403).json({ status: 'error', message: "Please Confim Your Email Address" });
+
+    }
+
+
     const isMatch = await bcrypt.compare(password, staffExists.password)
 
     if (isMatch) {
+      req.session && (req.session.staffId = staffExists.id)
+
+
       res.json({
         status: 'success', message: `Welcome ${staffExists.firstName}`,
         data: {
