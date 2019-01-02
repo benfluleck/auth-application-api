@@ -29,6 +29,7 @@ describe('Authentication', () => {
             .to
             .equal(201);
           expect(res.body).to.be.a('object');
+          expect(res.body.message).to.equal('Staff Created Successfully')
           done();
         }).catch((err) => {
           done(err)
@@ -51,7 +52,8 @@ describe('Authentication', () => {
         email: ''
       })
       .then((res) => {
-        expect(res.body.message).to.equal('Please provide a valid email address');
+        expect(res.body.error.email).to.equal('Please provide a valid email address');
+        expect(res.body.message).to.equal('An error has occured');
         expect(res.status)
           .to
           .equal(400);
@@ -99,7 +101,7 @@ describe('Authentication', () => {
             .password()
         })
         .then((res) => {
-          expect(res.body.message).to.equal('Please provide a valid email address');
+          expect(res.body.error.email).to.equal('Please provide a valid email address');
           expect(res.status)
             .to
             .equal(400);
@@ -109,24 +111,24 @@ describe('Authentication', () => {
         })
     }
   );
-  it('should return 200 when a regular staff signs in', (done) => {
+  it('should return 403 when a regular staff signs in but has not confirmed their email', (done) => {
     chai
       .request(app)
       .post('/api/v1/auth/signin')
       .set('Accept', 'application/x-www-form-urlencoded')
       .send({ email: userDetails.email, password: userDetails.password })
       .then((res) => {
-        expect(res.body.message).to.equal('Welcome Benny');
+        expect(res.body.message).to.equal('Please Confirm Your Email Address');
         expect(res.status)
           .to
-          .equal(200);
+          .equal(403);
         done();
       }).catch((err) => {
         done(err)
       })
   });
 
-  it('should throw a 404 error for Users that do not exist', (done) => {
+  it('should throw a 401 error for Users that do not exist', (done) => {
     chai
       .request(app)
       .post('/api/v1/auth/signin')
@@ -135,10 +137,10 @@ describe('Authentication', () => {
       .then((res) => {
         expect(res.body.message)
           .to
-          .equal('This staff does not exist');
+          .equal('Wrong Credentials');
         expect(res.status)
           .to
-          .equal(404);
+          .equal(401);
         done();
       })
       .catch((err) => {
@@ -154,7 +156,8 @@ describe('Authentication', () => {
       .then((res) => {
         expect(res.body.message)
           .to
-          .equal('Please enter a valid password');
+          .equal('An error has occured');
+        expect(res.body.error.password).to.equal('Please enter a valid password');
         expect(res.status)
           .to
           .equal(400);
@@ -164,7 +167,7 @@ describe('Authentication', () => {
         done(err)
       })
   });
-  it('should return a 404 error for an Invalid password',
+  it('should return a 401 error for an Invalid password',
     (done) => {
       chai
         .request(app)
