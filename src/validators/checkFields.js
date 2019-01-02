@@ -1,3 +1,4 @@
+import isEmpty  from 'lodash.isempty';
 import { checkLengthMap, checkLengthErrorMessages } from './validation';
 
 const fieldMap = ({
@@ -24,21 +25,27 @@ const fieldMap = ({
 export default (req, res, next) => {
 
   const { path } = req;
-  const allFields = fieldMap[ path ]
-    .find((field) => {
-      if (req.body[ field ]) {
-        const validationFn = checkLengthMap[ field ];
 
-        return !validationFn.every((fn) => fn(req.body[ field ]));
-      }
-      return true;
-    });
+  const error = {};
 
-  if (allFields) {
+  fieldMap[ path ].map((field) => {
+    if (req.body[ field ]) {
+      checkLengthMap[ field ]
+        .every((fn) => !fn(req.body[ field ]) && { error: { [ field ]: checkLengthErrorMessages[ field ] } });
+    } else if (!req.body[ field ]) {
+
+      error[ field ] = checkLengthErrorMessages[ field ];
+    }
+    return true;
+
+  });
+
+
+  if (!isEmpty(error)) {
     return res.status(400).send({
       status: 'error',
-      message: checkLengthErrorMessages[ allFields ]
-
+      message: 'An error has occured',
+      error,
     });
   }
   next();

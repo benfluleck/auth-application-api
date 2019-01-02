@@ -8,17 +8,13 @@ const fieldLength = {
 };
 
 const emailRegex = /^(([^<>()[\].,;:\s@"]+(\.[^<>()[\].,;:\s@"]+)*)|(".+"|"_+"))@(([^<>()[\].,;:\s@"]+\.)+[^<>()[\].,;:\s@"]{2,})$/i;
-const validateEmail = (emailAddress) => emailRegex.test(emailAddress);
+
+export const validateEmail = (emailAddress) => emailRegex.test(emailAddress);
+
+export const inValidEmailErrorMessages = 'This email address you have provided is invalid';
 
 const modifiedIsLength = (field) => (val) => isLength(val, fieldLength[ field ] || {});
 
-export const invalidFieldMap = {
-  email: [ validateEmail ]
-};
-
-export const inValidFieldErrorMessages = {
-  email: 'This email address you have provided is invalid'
-};
 
 export const checkLengthMap = {
   email: [ modifiedIsLength('email') ],
