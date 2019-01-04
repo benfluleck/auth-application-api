@@ -2,7 +2,6 @@ import uuid from 'uuid';
 import Redis from 'ioredis';
 
 
-
 const redis = new Redis();
 
 export const createConfirmEmailLink = async (currentUrl, userId) => {

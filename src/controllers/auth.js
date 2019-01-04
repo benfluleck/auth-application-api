@@ -4,7 +4,7 @@ import Redis from 'ioredis';
 
 import Staff from '../models/staff'
 import { createConfirmEmailLink } from '../config/createConfirmationLink';
-import { sendConfirmationEmail } from '../email/confirmationEmail';
+import { sendConfirmationEmail } from '../email/confirmationEmail/email';
 import { inValidEmailErrorMessages, validateEmail }  from '../validators/validation'
 
 const redis = new Redis()
@@ -59,9 +59,9 @@ export const signup = async (req, res) => {
 
           const confirmedUrl = req.protocol + '://' + req.get('host');
 
-        if(process.env.NODE_ENV === "test") {
+        if(process.env.NODE_ENV !== "test") {
           const confirmationLink = await createConfirmEmailLink(confirmedUrl, response.id, redis)
-          sendConfirmationEmail(response.email, confirmationLink)
+          sendConfirmationEmail(response.email, response.firstName, confirmationLink)
         }
 
         res.status(201).json({
@@ -91,7 +91,7 @@ export const signin = async (req, res) => {
     const isMatch = await bcrypt.compare(password, staffExists.password)
 
     if (isMatch) {
-      
+
       if(!staffExists.hasConfirmed) {
         return res.status(403).json({ status: 'error', message: "Please Confirm Your Email Address" });
       }
