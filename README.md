@@ -3,4 +3,4 @@
 [![Coverage Status](https://coveralls.io/repos/github/benfluleck/hotel-booking-application-api/badge.svg)](https://coveralls.io/github/benfluleck/hotel-booking-application-api)
 
 
-# Datanomics API
+# Auth API
