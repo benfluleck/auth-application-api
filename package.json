@@ -47,6 +47,6 @@
   },
   "devDependencies": {
     "babel-watch": "git+https://github.com/monathur/babel-watch.git",
-    "mocha": "^6.1.2"
+    "mocha": "^6.2.1"
   }
 }
