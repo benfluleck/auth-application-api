@@ -35,7 +35,7 @@
     "express-session": "^1.15.6",
     "faker": "^4.1.0",
     "ioredis": "^4.3.0",
-    "knex": "^0.16.4",
+    "knex": "^0.19.1",
     "lodash.isempty": "^4.4.0",
     "mailgen": "^2.0.7",
     "nyc": "^13.1.0",
