@@ -43,7 +43,7 @@
     "pg": "^7.6.1",
     "sqlite3": "^4.0.4",
     "uuidv4": "^4.0.0",
-    "validator": "^10.9.0"
+    "validator": "^12.1.0"
   },
   "devDependencies": {
     "babel-watch": "git+https://github.com/monathur/babel-watch.git",
