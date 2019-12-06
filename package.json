@@ -15,7 +15,7 @@
     "drop-migration": "knex migrate:rollback"
   },
   "dependencies": {
-    "@babel/cli": "^7.1.5",
+    "@babel/cli": "^7.7.5",
     "@babel/core": "^7.1.6",
     "@babel/node": "^7.0.0",
     "@babel/plugin-proposal-object-rest-spread": "^7.0.0",
